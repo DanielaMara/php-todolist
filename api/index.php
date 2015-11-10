@@ -3,8 +3,9 @@ require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 
+//http://hostname/api/
 $app->get('/', function() use ( $app ) {
-    echo "Welcome to REST API";
+    echo "Welcome to Task REST API";
 });
 
 $app->get('/hello/:name', function($name) use ( $app ) {

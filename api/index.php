@@ -8,8 +8,11 @@ $app->get('/', function() use ( $app ) {
     echo "Welcome to Task REST API";
 });
 
+// http://domain.address/api/tasks
 $app->get('/tasks', function() use ( $app ) {
     $tasks = getTasks();
+    //Define what kind is this response
+    $app->response()->header('Content-Type','application/json');
     echo json_encode($tasks);
 });
 

@@ -3,12 +3,13 @@ require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 
-//http://hostname/api/
+// http://hostname/api/
 $app->get('/', function() use ( $app ) {
     echo "Welcome to Task REST API";
 });
 
 // http://domain.address/api/tasks
+// get all tasks
 $app->get('/tasks', function() use ( $app ) {
     $tasks = getTasks();
     //Define what kind is this response
@@ -16,6 +17,8 @@ $app->get('/tasks', function() use ( $app ) {
     echo json_encode($tasks);
 });
 
+// http://domain.address/api/tasks/1
+// get a task by id
 $app->get('/tasks/:id', function($id) use ( $app ) {
     $tasks = getTasks();
     $index = array_search($id, array_column($tasks, 'id'));
@@ -27,6 +30,12 @@ $app->get('/tasks/:id', function($id) use ( $app ) {
     else {
         $app->response()->setStatus(204);
     }
+});
+
+$app->post('/tasks', function() use ( $app ) {
+    $taskJson = $app->request()->getBody();
+    $task = json_decode($taskJson);
+    echo $task->description;
 });
 
 //TODO move it to a DAO class

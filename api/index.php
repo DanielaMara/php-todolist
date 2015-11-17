@@ -70,15 +70,15 @@ REQUEST Body
 RESPONSE 200 OK Body
 Learn REST added
 */
-$app->post('/tasks', function() use ( $app ) {
+$app->post('/tasks/', function() use ( $app ) {
     $taskJson = $app->request()->getBody();
-    $newTask = json_decode($taskJson);
+    $newTask = json_decode($taskJson, true);
     if($newTask) {
         $task = TaskService::add($newTask);
-        echo "{$task->description} added";
+        echo "Task {$task['description']} added";
     }
     else {
-        $app->response()->setStatus(400);
+        $app->response->setStatus(400);
         echo "Malformat JSON";
     }
 });
@@ -99,18 +99,40 @@ RESPONSE 200 OK
   "done": false
 }
 */
-$app->put('/tasks/:id', function($id) use ( $app ) {
-    echo $app->request()->getBody();
+$app->put('/tasks/', function() use ( $app ) {
+    $taskJson = $app->request()->getBody();
+    $updatedTask = json_decode($taskJson, true);
+    
+    if($updatedTask && $updatedTask['id']) {
+        if(TaskService::update($updatedTask)) {
+          echo "Task {$updatedTask['description']} updated";  
+        }
+        else {
+          $app->response->setStatus('404');
+          echo "Task not found";
+        }
+    }
+    else {
+        $app->response->setStatus(400);
+        echo "Malformat JSON";
+    }
 });
 
 /*
 HTTP DELETE http://domain/api/tasks/1
-
 RESPONSE 200 OK
-Task deleted
+Task with id = 1 was deleted
+RESPONSE 404
+Task with id = 1 not found
 */
 $app->delete('/tasks/:id', function($id) use ( $app ) {
-    echo $id;
+    if(TaskService::delete($id)) {
+      echo "Task with id = $id was deleted";
+    }
+    else {
+      $app->response->setStatus('404');
+      echo "Task with id = $id not found";
+    }
 });
 
 $app->run();

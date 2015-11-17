@@ -22,8 +22,32 @@ class TaskService {
     }
     
     public static function add($newTask) {
+        $db = ConnectionFactory::getDB();
         $task = $db->tasks->insert($newTask);
-        return $tasks;
+        return $task;
+    }
+    
+    public static function update($updatedTask) {
+        $db = ConnectionFactory::getDB();
+        $task = $db->tasks[$updatedTask['id']];
+        
+        if($task) {
+            $task['description'] = $updatedTask['description'];
+            $task['done'] = $updatedTask['done'];
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public static function delete($id) {
+        $db = ConnectionFactory::getDB();
+        $task = $db->tasks[$id];
+        if($task) {
+            $task->delete();
+            return true;
+        }
+        return false;
     }
 }
 ?>

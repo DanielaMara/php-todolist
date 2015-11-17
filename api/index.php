@@ -31,7 +31,7 @@ RESPONSE 200 OK
   }
 ]
 */
-$app->get('/tasks1', function() use ( $app ) {
+$app->get('/tasks/', function() use ( $app ) {
     $tasks = TaskService::listTasks();
     $app->response()->header('Content-Type', 'application/json');
     echo json_encode($tasks);
@@ -49,12 +49,11 @@ RESPONSE 200 OK
 RESPONSE 204 NO CONTENT
 */
 $app->get('/tasks/:id', function($id) use ( $app ) {
-    $tasks = array();
-    $index = array_search($id, array_column($tasks, 'id'));
+    $task = TaskService::getById($id);
     
-    if($index > -1) {
+    if($task) {
         $app->response()->header('Content-Type', 'application/json');
-        echo json_encode($tasks[$index]);
+        echo json_encode($task);
     }
     else {
         $app->response()->setStatus(204);
@@ -73,8 +72,9 @@ Learn REST added
 */
 $app->post('/tasks', function() use ( $app ) {
     $taskJson = $app->request()->getBody();
-    $task = json_decode($taskJson);
-    if($task) {
+    $newTask = json_decode($taskJson);
+    if($newTask) {
+        $task = TaskService::add($newTask);
         echo "{$task->description} added";
     }
     else {

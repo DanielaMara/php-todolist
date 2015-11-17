@@ -1,5 +1,7 @@
 <?php
 require 'vendor/autoload.php';
+require 'database/ConnectionFactory.php';
+require 'tasks/TaskService.php';
 
 $app = new \Slim\Slim();
 
@@ -29,10 +31,9 @@ RESPONSE 200 OK
   }
 ]
 */
-$app->get('/tasks', function() use ( $app ) {
-    $tasks = getTasks();
-    //Define what kind is this response
-    $app->response()->header('Content-Type','application/json');
+$app->get('/tasks1', function() use ( $app ) {
+    $tasks = TaskService::listTasks();
+    $app->response()->header('Content-Type', 'application/json');
     echo json_encode($tasks);
 });
 
@@ -48,7 +49,7 @@ RESPONSE 200 OK
 RESPONSE 204 NO CONTENT
 */
 $app->get('/tasks/:id', function($id) use ( $app ) {
-    $tasks = getTasks();
+    $tasks = array();
     $index = array_search($id, array_column($tasks, 'id'));
     
     if($index > -1) {
@@ -111,16 +112,6 @@ Task deleted
 $app->delete('/tasks/:id', function($id) use ( $app ) {
     echo $id;
 });
-
-//TODO move it to a DAO class
-function getTasks() {
-    $tasks = array (
-        array('id'=>1,'description'=>'Learn REST','done'=>false),
-        array('id'=>2,'description'=>'Learn JavaScript','done'=>false),
-        array('id'=>3,'description'=>'Learn English','done'=>false)
-    );
-    return $tasks;
-}
 
 $app->run();
 ?>

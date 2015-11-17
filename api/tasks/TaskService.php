@@ -34,6 +34,7 @@ class TaskService {
         if($task) {
             $task['description'] = $updatedTask['description'];
             $task['done'] = $updatedTask['done'];
+            $task->update();
             return true;
         }
         

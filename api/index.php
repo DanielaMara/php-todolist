@@ -5,7 +5,7 @@ require 'tasks/TaskService.php';
 
 $app = new \Slim\Slim();
 
-// http://hostname/api/
+// http://hostname/api/daniela
 $app->get('/', function() use ( $app ) {
     echo "Welcome to Task REST API";
 });
